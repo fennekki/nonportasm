@@ -5,10 +5,7 @@ exit:
     # Calls the Linux sys_exit syscall, exiting program
     #
     # Inputs:
-    #   %rdi - error code to return from program 
-    #
-    # Dirties:
-    #   %rax - syscall number 60
+    #   %rdi - error code to return from program
 
     movq $60, %rax
     syscall
@@ -22,9 +19,23 @@ write:
     #   %rsi - message buffer (address)
     #   %rdx - message length (quad)
     #
-    # Dirties:
-    #   %rax - syscall number 1
+    # Outputs:
+    #   %rax - TODO what does it output
+
     movq $1, %rax # Syscall number 1 - write
     syscall
     ret
 
+.global quad_to_hex
+quad_to_hex:
+    # Converts given quadword to hex
+    #
+    # Inputs:
+    #   %rdi - input quadword
+    #
+    # Outputs:
+    #   %rax -
+    # TODO THE WHOLE THING
+
+    nop
+    ret
