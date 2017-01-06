@@ -24,7 +24,7 @@ write:
 
     movq $1, %rax # Syscall number 1 - write
     syscall
-    ret
+    retq
 
 .global quad_to_hex
 quad_to_hex:
@@ -38,4 +38,4 @@ quad_to_hex:
     # TODO THE WHOLE THING
 
     nop
-    ret
+    retq

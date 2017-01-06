@@ -25,7 +25,7 @@ mmap:
 
     movq $9, %rax
     syscall
-    ret
+    retq
 
 .global munmap
 munmap:
@@ -33,14 +33,14 @@ munmap:
     #
     # Inputs:
     # 	%rdi - address to deallocate
-    # 	%rsi - length to deallocate§
+    # 	%rsi - length to deallocate
     #
     # Outputs:
     # 	%rax - TODO what
 
     movq $11, %rax
     syscall
-    ret
+    retq
 
 .global easy_mmap
 easy_mmap:
@@ -69,4 +69,4 @@ easy_mmap:
     movq $-1, %r8 # No file descriptor
     movq $0, %r9 # File offset 0
     call mmap
-    ret
+    retq
