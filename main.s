@@ -15,6 +15,7 @@ _start:
 
     movq (test_str_len), %rdi # Allocate a bit of memory
     callq easy_mmap
+    # -22 - EINVAL? Why
 
     # Copy in data
     cld # Clear direction (reverse) flag so we move forward

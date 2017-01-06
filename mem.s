@@ -63,8 +63,7 @@ easy_mmap:
 
     movq %rdi, %rsi # Move length to correct register
     movq $0, %rdi # Don't care about placement in memory
-    movq $0x1, %rdx # Readable
-    orq $0x2, %rdx # And writable
+    movq $0x3, %rdx # Readable and writable
     movq $0x20, %r10 # Not backed by a file
     movq $-1, %r8 # No file descriptor
     movq $0, %r9 # File offset 0
