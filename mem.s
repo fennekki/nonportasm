@@ -13,6 +13,7 @@ mmap:
     # 	       0x2 - PROT_WRITE - writable
     # 	       0x4 - PROT_EXEC - executable
     #	%r10 - flags: Lots. Ones that make sense:
+    #	       NOTE: EITHER SHARED OR PRIVATE IS REQUIRED LEST YOU WANT EINVAL
     #	       0x01 - MAP_SHARED - share changes
     #	       0x02 - MAP_PRIVATE - private copy-on-write mapping
     #	       0x20 - MAP_ANONYMOUS - not backed by file. Set this
@@ -21,7 +22,7 @@ mmap:
     #	%r9 - offset into mapped file. Set to 0, usually
     #
     # Outputs:
-    # 	%rax - allocated memory address
+    # 	%rax - allocated memory address OR on error, error code matchin errno
 
     movq $9, %rax
     syscall
