@@ -66,8 +66,9 @@ easy_mmap:
     movq %rdi, %rsi # Move length to correct register
     movq $0, %rdi # Don't care about placement in memory
     movq $0x3, %rdx # Readable and writable
-    movq $0x22, %r10 # Not backed by a file, private cow
+    movq $0x21, %r10 # Not backed by a file, shared
     movq $-1, %r8 # No file descriptor
     movq $0, %r9 # File offset 0
-    callq mmap
+    movq $9, %rax # mmap inlined here
+    syscall
     retq
