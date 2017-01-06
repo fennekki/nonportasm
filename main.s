@@ -15,7 +15,6 @@ _start:
 
     movq (test_str_len), %rdi # Allocate a bit of memory
     callq easy_mmap
-    # -22 - EINVAL? Why
 
     # Copy in data
     cld # Clear direction (reverse) flag so we move forward
@@ -26,7 +25,7 @@ _start:
 
     # Let's try printing, same as before
     movq $1, %rdi
-    movq %r12, %rsi
+    movq %rax, %rsi # The address is still in rax even though we just wiped rdi
     movq (test_str_len), %rdx
     callq write
         
