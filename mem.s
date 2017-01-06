@@ -2,7 +2,7 @@
 
 .global mmap
 mmap:
-    # Calls the Linux sys_mmap syscallq to give us some memory
+    # Calls the Linux sys_mmap syscall to give us some memory
     #
     # Inputs:
     # 	%rdi - placement hint. Set to 0, usually
@@ -29,7 +29,7 @@ mmap:
 
 .global munmap
 munmap:
-    # Calls the Linux sys_munmap syscallq to free allocated memory
+    # Calls the Linux sys_munmap syscall to free allocated memory
     #
     # Inputs:
     # 	%rdi - address to deallocate
