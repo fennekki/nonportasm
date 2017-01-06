@@ -1,4 +1,4 @@
 all: nonportasm
 
-nonportasm: util.o main.o
+nonportasm: mem.o util.o main.o
 	$(LD) -o $@ $+ 
