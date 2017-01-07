@@ -23,7 +23,7 @@ mmap:
     #	%r9 - offset into mapped file. Set to 0, usually
     #
     # Outputs:
-    # 	%rax - allocated memory address OR on error, error code matchin errno
+    # 	%rax - allocated memory address OR negative error code matching errno
 
     movq $9, %rax
     syscall
@@ -96,7 +96,7 @@ easy_alloc:
     addq $8, %rdi # Add 8 bytes to requested memory size
     pushq %rdi # Save size
     callq easy_mmap # Allocate
-    cmp $0, %rax # Compare rax to 0
+    cmpq $0, %rax # Compare rax to 0
     jge 1f # Jump to 1f if we got a positive value; We'll assume it's valid
 
     # If we stay here, we have an error
@@ -122,7 +122,7 @@ easy_free:
     # Outputs:
     # 	%rax - TODO what do we return
 
-    subq $8, %rdi # Move address 8 bytes back 
+    subq $8, %rdi # Move address 8 bytes back
     movq (%rdi), %rsi # Move the length of block to rsi
     callq munmap # Unmap
     retq
