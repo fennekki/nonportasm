@@ -1,8 +1,9 @@
-# Miscellaneous utility routines
+# Miscellaneous utility routines.
 
+.text
 .global exit
 exit:
-    # Calls the Linux sys_exit syscall, exiting program
+    # Calls the Linux sys_exit syscall, exiting program.
     #
     # Inputs:
     #   %rdi - error code to return from program
@@ -12,7 +13,7 @@ exit:
 
 .global write
 write:
-    # Calls the Linux sys_write syscall
+    # Calls the Linux sys_write syscall.
     #
     # Inputs:
     #   %rdi - file descriptor (usually 1 - stdout)
@@ -28,7 +29,7 @@ write:
 
 .global quad_to_hex
 quad_to_hex:
-    # Converts given quadword to hex
+    # Converts given quadword to hex.
     #
     # Inputs:
     #   %rdi - input quadword

@@ -14,7 +14,8 @@ _start:
     callq write
 
     movq (test_str_len), %rdi # Allocate a bit of memory
-    callq easy_mmap
+    callq easy_alloc
+    movq %rax, %r12 # Save address in r12
 
     # Copy in data
     cld # Clear direction (reverse) flag so we move forward
@@ -25,13 +26,12 @@ _start:
 
     # Let's try printing, same as before
     movq $1, %rdi
-    movq %rax, %rsi # The address is still in rax even though we just wiped rdi
+    movq %r12, %rsi # Address was stored in r12
     movq (test_str_len), %rdx
     callq write
         
-    movq %r12, %rdi # Deallocate the memory
-    movq (test_str_len), %rsi
-    callq munmap
+    movq %r12, %rdi # Again, address from r12
+    callq easy_free # Deallocate the memory
 
     xorq %rdi, %rdi # No error, return 0
     jmp exit # callq sys_exit

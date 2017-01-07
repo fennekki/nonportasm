@@ -1,8 +1,9 @@
 # Rudimentary memory management
 
+.text
 .global mmap
 mmap:
-    # Calls the Linux sys_mmap syscall to give us some memory
+    # Calls the Linux sys_mmap syscall to give us some memory.
     #
     # Inputs:
     # 	%rdi - placement hint. Set to 0, usually
@@ -30,14 +31,14 @@ mmap:
 
 .global munmap
 munmap:
-    # Calls the Linux sys_munmap syscall to free allocated memory
+    # Calls the Linux sys_munmap syscall to free allocated memory.
     #
     # Inputs:
     # 	%rdi - address to deallocate
     # 	%rsi - length to deallocate
     #
     # Outputs:
-    # 	%rax - TODO what
+    # 	%rax - TODO what DOES it return? 0 or errno? Whoof knows
 
     movq $11, %rax
     syscall
@@ -45,7 +46,7 @@ munmap:
 
 .global easy_mmap
 easy_mmap:
-    # Just allocate the goddamn memory already
+    # Just allocate the goddamn memory already.
     #
     # Inputs:
     # 	%rdi - amount of memory to allocate
@@ -57,11 +58,9 @@ easy_mmap:
     # 	%r10
     # 	%r8
     # 	%r9
-    # 	TODO should these be cleaned? Probably not?
     #
     # Outputs:
-    # 	%rax - allocated memory address
-    # 	TODO NO IT DOESNT?? I T RETURNS 0???
+    # 	%rax - allocated memory address OR on error, error code matchin errno
 
     movq %rdi, %rsi # Move length to correct register
     movq $0, %rdi # Don't care about placement in memory
@@ -71,4 +70,59 @@ easy_mmap:
     movq $0, %r9 # File offset 0
     movq $9, %rax # mmap inlined here
     syscall
+    retq
+
+.global easy_alloc
+easy_alloc:
+    # Allocate memory that "knows" how much memory you allocated.
+    #
+    # Currently backed by mmap and not a proper malloc! I believe mmap
+    # allocates entire pages to the process which is non-ideal.
+    #
+    # Inputs:
+    # 	%rdi - amount of memory to allocate
+    #
+    # Dirties:
+    # 	%rdi
+    # 	%rsi (via easy_mmap)
+    # 	%rdx (via easy_mmap)
+    # 	%r10 (via easy_mmap)
+    # 	%r8 (via easy_mmap)
+    # 	%r9 (via easy_mmap)
+    #
+    # Outputs:
+    # 	%rax - allocated memory address OR on error a literal 0
+
+    addq $8, %rdi # Add 8 bytes to requested memory size
+    pushq %rdi # Save size
+    callq easy_mmap # Allocate
+    cmp $0, %rax # Compare rax to 0
+    jge 1f # Jump to 1f if we got a positive value; We'll assume it's valid
+
+    # If we stay here, we have an error
+    movq $0, %rax
+    retq # Return 0
+
+    1: popq %rdi # Return saved size
+    movq %rdi, (%rax) # Copy size of allocated memory block to memory block
+    addq $8, %rax # Skip the size part in returned value
+    retq
+
+.global easy_free
+easy_free:
+    # Deallocate memory that "knows" how much memory you allocated.
+    #
+    # Inputs:
+    # 	%rdi - memory address to deallocate
+    #
+    # Dirties:
+    # 	%rdi
+    # 	%rsi
+    #
+    # Outputs:
+    # 	%rax - TODO what do we return
+
+    subq $8, %rdi # Move address 8 bytes back 
+    movq (%rdi), %rsi # Move the length of block to rsi
+    callq munmap # Unmap
     retq
