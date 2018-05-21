@@ -1,6 +1,5 @@
 .data
 startup_msg: .string "nonportasm 0.1\nall fennecs pet\n"
-startup_msg_len: .quad (. - startup_msg) # this point - startup_msg
 
 test_str: .string "yiff\n"
 test_str_len: .quad (. - test_str)
@@ -11,10 +10,8 @@ alloc_error_msg_len: .quad (. - alloc_error_msg)
 .text
 .global _start # entry point
 _start:
-    movq $1, %rdi # File descriptor 1 - stdout
-    movq $startup_msg, %rsi # Message
-    movq (startup_msg_len), %rdx # Get length
-    callq write
+    movq $startup_msg, %rdi # Message
+    callq printz
 
     movq (test_str_len), %rdi # Allocate a bit of memory
     callq easy_alloc
@@ -24,11 +21,10 @@ _start:
     jz alloc_error # If zero, quit with error
 
     # Copy in data
-    cld # Clear direction (reverse) flag so we move forward
-    movq $test_str, %rsi # Source
     movq %rax, %rdi # Destination address from easy_mmap return value
-    movq (test_str_len), %rcx # Set counter to string len
-    rep movsb # Copy
+    movq $test_str, %rsi # Source
+    movq (test_str_len), %rdx # Length
+    call copy_bytes
 
     # Let's try printing, same as before
     movq $1, %rdi

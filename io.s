@@ -34,8 +34,8 @@ printz:
     callq stringz_length # Get length in rax - rdi already has the address
     
     # Setup write syscall
-    mov %rdi, %rsi # Buffer address
-    mov %rax, %rdx # Length
-    mov $1, %rdi # Stdout
+    movq %rdi, %rsi # Buffer address
+    movq %rax, %rdx # Length
+    movq $1, %rdi # Stdout
     callq write
     retq

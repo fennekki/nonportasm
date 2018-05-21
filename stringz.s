@@ -4,19 +4,26 @@
 stringz_length:
     # Determine length of a zero-terminated string
     #
-    # TODO would repnz help with this?
-    #
     # Inputs:
     # 	%rdi - string memory address
+    #
+    # Dirties:
+    # 	%rcx
     #
     # Outputs:
     # 	%rax - string length
 
-    xorq %rax, %rax # Reset rax
-    incq %rax # Increment rax (even in an empty string there's an initial 0)
-    1: testb $0xFF, -1(%rdi, %rax) # Test string addr + rax - 1 against nonzero
-    jnz 1b # If comparison wasn't zero, string isn't over
-    retq # rax is now string length
+    movq %rdi, %rax # Put pointer in rax
+    xorq %rcx, %rcx # Clear rcx
+1:
+    movb (%rax), %cl # Copy byte to rcx low byte
+    inc %rax # Move pointer
+    cmpb $0, %cl # Test against zero
+    jne 1b # Loop until done
+
+    dec %rax # We'll do one extra increment otherwise
+    subq %rdi, %rax # Difference between pointers is result
+    retq
 
 .global copy_stringz
 copy_stringz:
@@ -32,11 +39,13 @@ copy_stringz:
     # 	%rax
     #   %rcx
 
-    pushq %rdi # Save rdi
+    pushq %rdi # Save rdi, rsi
+    pushq %rsi
     movq %rsi, %rdi # Copy source over
     callq stringz_length # Get length in rax
     movq %rax, %rcx # Setup rcx
-    popq %rdi # Restore rdi
+    popq %rsi # Restore
+    popq %rdi
 
     pushfq # Push flags
     cld # Go forward
